@@ -1,12 +1,8 @@
 pipeline {
-    agent any  // Use 'any' for generic agents that have access to Docker
+    agent any
 
     environment {
         IMAGE_NAME = "movie-service"
-        CONTAINER_NAME = "movie-service"
-        SERVICE_PORT = "8081"
-        DOCKER_HUB_USERNAME = "rous2m"
-        DOCKER_HUB_PASSWORD = "dckr_pat_deSAaaofo9aVPMnPKLnOnbxanbg"
         DOCKER_HUB_REPO = "rous2m"
     }
 
@@ -20,7 +16,6 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    
                     docker.image('maven:3.9.6-eclipse-temurin-17').inside {
                         sh 'mvn clean package -DskipTests'
                     }
@@ -46,14 +41,18 @@ pipeline {
             }
         }
 
-
         stage('Deploy to Docker Hub') {
             steps {
-                script {
-                    sh """
-                        echo $DOCKER_HUB_PASSWORD | docker login -u $DOCKER_HUB_USERNAME --password-stdin
-                        docker push $DOCKER_HUB_REPO/$IMAGE_NAME:latest
-                    """
+                withCredentials([usernamePassword(
+                    credentialsId: 'docker-hub-creds',
+                    usernameVariable: 'rous2m',
+                    passwordVariable: 'dckr_pat_deSAaaofo9aVPMnPKLnOnbxanbg'
+                )]) {
+                    sh '''
+                        echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+                        docker push $DOCKER_USERNAME/$IMAGE_NAME:latest
+                        docker logout
+                    '''
                 }
             }
         }
