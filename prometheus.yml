@@ -1,0 +1,17 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+
+  - job_name: 'movie-service'
+    static_configs:
+      - targets: ['movieService:8000']
+
+  - job_name: 'user-service'
+    static_configs:
+      - targets: ['userService:63322']
+  
+  - job_name: 'email-service'
+    static_configs:
+      - targets: ['emailService:65121']
+
