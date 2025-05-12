@@ -4,6 +4,10 @@ pipeline {
     environment {
         IMAGE_NAME = "movie-service"
         DOCKER_HUB_REPO = "rous2m"
+        DOCKER_USERNAME = "rous2m"
+        DOCKER_PASSWORD = "dckr_pat_deSAaaofo9aVPMnPKLnOnbxanbg"
+        
+        
     }
 
     stages {
