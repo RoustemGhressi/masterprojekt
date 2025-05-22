@@ -1,5 +1,5 @@
 server:
-  port: 0
+  port: 8083
 
 ## Eureka Properties
 eureka:
@@ -8,6 +8,8 @@ eureka:
       defaultZone: http://eureka:password@localhost:8761/eureka
     fetch-registry: true
     register-with-eureka: true
+    lease-renewal-interval-in-seconds: 30
+    lease-expiration-duration-in-seconds: 90
 
 ## Apache Kafka Consumer Properties
 spring:
@@ -24,7 +26,7 @@ spring:
             trusted:
               packages: "*"
             type:
-              mapping: event:com.kaankaplan.emailService.dto.EmailMessageKafkaDto
+              mapping: event:com.roustem.emailService.dto.EmailMessageKafkaDto
     topic:
       name: email_topics
   # Zipkin Properties
@@ -39,10 +41,9 @@ spring:
     default-encoding: UTF-8
     host: smtp.gmail.com
     port: 587
-    username: roustemghressi@gmail.com
-    password: '96624191newZ'    
+    username: roustem12345@gmail.com
+    password: 'dcgb okvf zycv hxto'    
     protocol: smtp
-    test-connection: false
     properties:
       mail:
         smtp:
@@ -52,3 +53,21 @@ spring:
 
   application:
     name: emailService
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  metrics:
+    enable:
+      jvm: true
+      process: true
+  endpoint:
+    prometheus:
+      enabled: true
+
+  prometheus:
+    metrics:
+      export:
+        enabled: true

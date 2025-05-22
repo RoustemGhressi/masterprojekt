@@ -1,44 +1,48 @@
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Bilet Detay</title>
+    <meta charset="UTF-8" />
+    <title>Ticket Details</title>
 </head>
+<body style="margin: 0; padding: 0; background-color: #f4f4f4; font-family: Arial, sans-serif;">
 
-<body>
-<div align="center" width="100%" border="2px">
-    <div align="center" valign="top">
-        <br> <br>
-        <div width="600" border="3px">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f4f4f4; padding: 40px 0;">
+        <tr>
+            <td align="center">
+                <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); padding: 30px;">
+                    <tr>
+                        <td align="center" style="padding-bottom: 20px;">
+                            <h1 style="font-size: 36px; margin: 0; color: #222;">🎟️ Ticket Details</h1>
+                            <p style="font-size: 18px; color: #444;">Your payment has been successfully completed</p>
+                        </td>
+                    </tr>
 
-            <div style="font-size: 48px; color:black; font-family: Arial;">
-                <b>Bilet Detayları</b>
-            </div>
+                    <tr>
+                        <td style="font-size: 16px; color: #333; line-height: 1.6;">
+                            <p>Dear <strong>${fullName}</strong>,</p>
+                            <p>Thank you for choosing <strong>CineVision</strong> to purchase your ticket.</p>
 
-            <div style="font-size: 24px; color: black;">
-                <br>  <b>Ödeme İşleminiz Başarıyla Gerçekleşti </b> <br>
-            </div>
+                            <h3 style="color: #222; margin-top: 30px;">🎬 Ticket Information</h3>
+                            <p><strong>Movie:</strong> ${movieName}</p>
+                            <p><strong>Date:</strong> ${movieDay}</p>
+                            <p><strong>Cinema:</strong> ${saloonName}</p>
+                            <p><strong>Showtime:</strong> ${movieStartTime}</p>
+                            <p><strong>Seat(s):</strong> ${chairNumbers}</p>
 
-            <div>
-                <br> Sayın ${fullName}, bilet almak için CineVision'ı tercih ettiğiniz için teşekkür ederiz.<br>
-                <br>
-                <h3>Bilet Detayları</h3>
-                <h4>${movieName}</h4>
-                <br>
-                <h5><b>Tarih: </b> ${movieDay} </h5>
-                <h5><b>Sinema: </b> ${saloonName} </h5>
-                <h5><b>Seans: </b> ${movieStartTime} </h5>
-                <h5><b>Koltuk: </b> ${chairNumbers} </h5>
+                            <p style="margin-top: 30px;">As the CineVision family, we wish you a pleasant viewing experience!</p>
+                        </td>
+                    </tr>
 
-            </div>
-            <br>
-            <div>
-                <h4>CineVision ailesi olarak iyi seyirler dileriz.</h4>
-            </div>
-        </div>
+                    <tr>
+                        <td align="center" style="padding-top: 30px; font-size: 14px; color: #999;">
+                            &copy; 2025 CineVision. All rights reserved.
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
 
-        <br> <br>
-
-    </div>
-</div>
 </body>
 </html>
+

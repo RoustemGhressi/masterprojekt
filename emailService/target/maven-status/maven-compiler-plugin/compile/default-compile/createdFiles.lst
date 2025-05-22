@@ -1,7 +1,7 @@
-com\kaankaplan\emailService\business\concretes\EmailServiceImpl.class
-com\kaankaplan\emailService\dto\EmailMessageKafkaDto$EmailMessageKafkaDtoBuilder.class
-com\kaankaplan\emailService\business\abstracts\EmailService.class
-com\kaankaplan\emailService\dto\EmailMessageKafkaDto.class
-com\kaankaplan\emailService\kafka\KafkaConsumer.class
-com\kaankaplan\emailService\EmailServiceApplication.class
-com\kaankaplan\emailService\config\FreeMarkerEmailTemplateConfig.class
+com\roustem\emailService\dto\EmailMessageKafkaDto$EmailMessageKafkaDtoBuilder.class
+com\roustem\emailService\dto\EmailMessageKafkaDto.class
+com\roustem\emailService\business\concretes\EmailServiceImpl.class
+com\roustem\emailService\business\abstracts\EmailService.class
+com\roustem\emailService\EmailServiceApplication.class
+com\roustem\emailService\kafka\KafkaConsumer.class
+com\roustem\emailService\config\FreeMarkerEmailTemplateConfig.class

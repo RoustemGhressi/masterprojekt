@@ -20,3 +20,6 @@ eureka:
   instance:
     hostname: localhost
     prefer-ip-address: true
+  server:
+    enable-self-preservation: false
+    peer-eureka-nodes: ""

@@ -1,5 +1,5 @@
 server:
-  port: 0
+  port: 8081
 
 spring:
   application:
@@ -31,7 +31,7 @@ spring:
         spring:
           json:
             type:
-              mapping: event:com.kaankaplan.movieService.entity.dto.EmailMessageKafkaDto
+              mapping: event:com.roustem.movieService.entity.dto.EmailMessageKafkaDto
 
     topic:
       name: email_topics
@@ -54,7 +54,7 @@ eureka:
     register-with-eureka: true
 
 # Circuit Breaker Properties
-management:
+breakermanagement:
   health:
     circuitbreakers:
       enabled: true
@@ -93,17 +93,20 @@ resilience4j:
 
 # Management and Prometheus Configuration
 
-prom:
+management:
   endpoints:
     web:
       exposure:
         include: health,info,prometheus
-
+  metrics:
+    enable:
+      jvm: true
+      process: true
   endpoint:
     prometheus:
       enabled: true
 
-  metrics:
-    export:
-      prometheus:
+  prometheus:
+    metrics:
+      export:
         enabled: true

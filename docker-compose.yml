@@ -133,7 +133,7 @@ volumes:
   postgres:
   data:
   grafana-storage:
-  jenkins_home:
+  jenkins_home: 
 
 networks:
   postgres:

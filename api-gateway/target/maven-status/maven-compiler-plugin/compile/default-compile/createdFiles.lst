@@ -1,2 +1,2 @@
-com\kaankaplan\apigateway\ApiGatewayApplication.class
-com\kaankaplan\apigateway\config\SecurityConfig.class
+com\roustem\apigateway\ApiGatewayApplication.class
+com\roustem\apigateway\config\SecurityConfig.class

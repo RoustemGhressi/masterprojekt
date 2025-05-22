@@ -1,5 +1,5 @@
 server:
-  port: 0
+  port: 8082
 
 spring:
   application:
@@ -28,6 +28,8 @@ eureka:
       defaultZone: http://eureka:password@localhost:8761/eureka
     fetch-registry: true
     register-with-eureka: true
+    lease-renewal-interval-in-seconds: 30
+    lease-expiration-duration-in-seconds: 90
 
 # JWT Properties
 jwt:
@@ -40,12 +42,15 @@ management:
     web:
       exposure:
         include: health,info,prometheus
-
+  metrics:
+    enable:
+      jvm: true
+      process: true
   endpoint:
     prometheus:
       enabled: true
 
-  metrics:
-    export:
-      prometheus:
+  prometheus:
+    metrics:
+      export:
         enabled: true
