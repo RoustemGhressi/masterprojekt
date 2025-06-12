@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Payment & Ticket Booking</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #e6f0ff;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #4f46e5;
+      color: white;
+      padding: 1rem 2rem;
+      border-radius: 0 0 8px 8px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .navbar a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+
+    #navActions button {
+      background: #ef4444;
+      border: none;
+      padding: 0.5rem 1rem;
+      margin-left: 0.5rem;
+      border-radius: 6px;
+      cursor: pointer;
+      color: white;
+      font-weight: 500;
+      transition: background 0.3s ease;
+    }
+
+    #navActions button:hover {
+      background: #dc2626;
+    }
+
+    .container {
+      max-width: 450px;
+      background: #ffffff;
+      padding: 2rem 2.5rem;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+      margin: 2rem auto;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      color: #333;
+      font-size: 1.5rem;
+      border-bottom: 2px solid #3b82f6;
+      padding-bottom: 0.5rem;
+    }
+
+    label {
+      display: block;
+      margin-top: 1rem;
+      font-weight: 600;
+      color: #333;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 0.6rem;
+      margin-top: 0.3rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      transition: border-color 0.3s ease;
+    }
+
+    input:focus, select:focus {
+      border-color: #3b82f6;
+      outline: none;
+    }
+
+    button[type="submit"] {
+      width: 100%;
+      margin-top: 1.5rem;
+      padding: 0.7rem;
+      background: #4f46e5;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button[type="submit"]:hover {
+      background: #4338ca;
+    }
+
+    .message {
+      margin-top: 1rem;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .message.error {
+      color: red;
+    }
+
+    .message.success {
+      color: green;
+    }
+
+    a.back-link {
+      display: inline-block;
+      margin-bottom: 1rem;
+      color: #4f46e5;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.2s;
+    }
+
+    a.back-link:hover {
+      color: #4338ca;
+    }
+  </style>
+</head>
+<body>
+  <header class="navbar">
+    <div class="logo">
+      <a href="index.html">🎬 CineVision</a>
+    </div>
+    <div id="navActions">
+      <button onclick="location.href='add-movie.html'">Add Movie</button>
+      <button onclick="location.href='add-actor.html'">Add Actor</button>
+      <button onclick="location.href='add-city.html'">Add City</button>
+      <button onclick="location.href='payment.html'">Payments</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      
+      <h1>Payment & Ticket Booking</h1>
+      <form id="paymentForm">
+        <label for="movieSelect">Select Movie</label>
+        <select id="movieSelect" required></select>
+
+        <!-- Changed this: from select to input text -->
+        <label for="saloonName">Saloon Name</label>
+        <input type="text" id="saloonName" placeholder="Enter saloon name" required />
+
+        <label for="movieDay">Select Date</label>
+        <input type="date" id="movieDay" required />
+
+        <label for="movieStartTime">Start Time</label>
+        <input type="time" id="movieStartTime" required />
+
+        <label for="fullName">Full Name</label>
+        <input type="text" id="fullName" placeholder="John Doe" required />
+
+        <label for="email">Email</label>
+        <input type="email" id="email" placeholder="example@mail.com" required />
+
+        <label for="phone">Phone Number</label>
+        <input type="tel" id="phone" placeholder="+1234567890" required />
+
+        <label for="chairNumbers">Chair Numbers (comma separated)</label>
+        <input type="text" id="chairNumbers" placeholder="A1, A2, B3" required />
+
+        <button type="submit">Book & Pay</button>
+      </form>
+      <div id="message" class="message"></div>
+    </div>
+  </main>
+
+  <script>
+    const API_BASE = '/api/movie/';
+    const token = ''; // Add your token here if needed
+
+    async function fetchWithAuth(url) {
+      const res = await fetch(url, {
+        headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+      });
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(`Request failed (${res.status}): ${text}`);
+      }
+      return res.json();
+    }
+
+    async function fetchMovies() {
+      return fetchWithAuth(API_BASE + 'movies/displayingMovies');
+    }
+
+    function fillSelect(selectEl, items, valueKey, textKey) {
+      selectEl.innerHTML = '';
+      items.forEach(item => {
+        const option = document.createElement('option');
+        option.value = item[valueKey];
+        option.textContent = item[textKey];
+        selectEl.appendChild(option);
+      });
+    }
+
+    async function loadData() {
+      try {
+        const movies = await fetchMovies();
+        fillSelect(document.getElementById('movieSelect'), movies, 'movieId', 'movieName');
+        // Removed saloon fetching and filling
+      } catch (error) {
+        showMessage(error.message, 'error');
+      }
+    }
+
+    function showMessage(msg, type) {
+      const messageDiv = document.getElementById('message');
+      messageDiv.textContent = msg;
+      messageDiv.className = `message ${type === 'error' ? 'error' : 'success'}`;
+    }
+
+    document.getElementById('paymentForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const movieId = Number(document.getElementById('movieSelect').value);
+      const saloonName = document.getElementById('saloonName').value.trim();
+      const movieDay = document.getElementById('movieDay').value;
+      const movieStartTime = document.getElementById('movieStartTime').value;
+      const fullName = document.getElementById('fullName').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const chairNumbers = document.getElementById('chairNumbers').value.trim();
+
+      if (!movieDay || !movieStartTime || !fullName || !email || !phone || !chairNumbers || !saloonName) {
+        showMessage('Please fill in all fields.', 'error');
+        return;
+      }
+
+      const payload = {
+        movieId,
+        saloonName,  // Changed from saloonId to saloonName string
+        movieDay,
+        movieStartTime,
+        fullName,
+        email,
+        phone,
+        chairNumbers,
+        token
+      };
+
+      try {
+        const res = await fetch(API_BASE + 'tickets/book', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) {
+          const errData = await res.json();
+          throw new Error(errData.message || 'Booking failed.');
+        }
+
+        showMessage('Ticket booked and payment processed successfully!', 'success');
+        e.target.reset();
+      } catch (error) {
+        showMessage(error.message, 'error');
+      }
+    });
+
+    loadData();
+  </script>
+</body>
+</html>

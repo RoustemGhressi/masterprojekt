@@ -5,7 +5,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-//import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import com.roustem.movieService.business.abstracts.CityService;
 import com.roustem.movieService.business.abstracts.MovieService;
@@ -22,7 +22,7 @@ public class CityServiceImpl implements CityService {
 
     private final CityDao cityDao;
     private final MovieService movieService;
-    //private final WebClient.Builder webClientBuilder;
+    private final WebClient.Builder webClientBuilder;
 
 
     @Override
@@ -56,6 +56,6 @@ public class CityServiceImpl implements CityService {
                         .build();
                 cityDao.save(city);
             }
-        }
-    //}
+        //}
+    }
 }

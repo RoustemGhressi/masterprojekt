@@ -21,6 +21,7 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final JwtProviderServiceImpl jwtService; // You should have this to generate the token
 
+  
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UserLoginRequestDto request) {
         try {

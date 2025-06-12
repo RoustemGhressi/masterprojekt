@@ -2,6 +2,7 @@ package com.roustem.userService.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import com.roustem.userService.business.abstracts.UserService;
@@ -18,9 +19,11 @@ public class UserController {
         return userService.isUserExist(userId);
     }
 
+
     @PostMapping("add")
-    public void addUser(@RequestBody UserRegisterRequestDto userRegisterRequestDto) {
+    public String addUser(@RequestBody UserRegisterRequestDto userRegisterRequestDto) {
         userService.addUser(userRegisterRequestDto);
+        return "redirect:/login.html";
     }
 
     @GetMapping("isUserCustomer")

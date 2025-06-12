@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Movie Service - Home</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f0f2f5;
+      color: #222;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #4f46e5;
+      color: white;
+      padding: 1rem 2rem;
+      border-radius: 0 0 8px 8px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .navbar a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+
+    #navActions button {
+      background: #ef4444;
+      border: none;
+      padding: 0.5rem 1rem;
+      margin-left: 0.5rem;
+      border-radius: 6px;
+      cursor: pointer;
+      color: white;
+      font-weight: 500;
+      transition: background 0.3s ease;
+    }
+
+    #navActions button:hover {
+      background: #dc2626;
+    }
+
+    .main {
+      padding: 2rem;
+    }
+
+    h1 {
+      color: #222;
+      margin-bottom: 1rem;
+      font-weight: 700;
+      border-bottom: 2px solid #4f46e5;
+      padding-bottom: 0.5rem;
+    }
+
+    .movie-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      justify-content: flex-start;
+    }
+
+    .movie-card {
+      background: #fff;
+      padding: 1rem;
+      border-radius: 12px;
+      width: 260px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .movie-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 25px rgba(79, 70, 229, 0.3);
+    }
+
+    .movie-card img {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+      border-radius: 10px;
+      margin-bottom: 0.8rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+    }
+
+    .movie-title {
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: #3b3663;
+      margin-bottom: 0.25rem;
+      min-height: 2.6em;
+    }
+
+    .movie-info {
+      font-size: 0.9rem;
+      color: #666;
+      margin-bottom: 0.5rem;
+    }
+
+    .movie-description {
+      font-size: 0.85rem;
+      color: #444;
+      line-height: 1.2;
+    }
+
+    .error-message {
+      color: red;
+      font-weight: 500;
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <header class="navbar">
+    <div class="logo">
+      <a href="index.html">🎬 CineVision</a>
+    </div>
+    <div id="navActions">
+      <button onclick="location.href='add-movie.html'">Add Movie</button>
+      <button onclick="location.href='add-actor.html'">Add Actor</button>
+      <button onclick="location.href='add-city.html'">Add City</button>
+      <button onclick="location.href='payment.html'">Payments</button>
+    </div>
+  </header>
+
+  <main class="main">
+    <h1>Now Showing Movies</h1>
+    <div id="nowShowing" class="movie-list"></div>
+    <div id="errorMessage" class="error-message"></div>
+  </main>
+
+  <script>
+    const API_BASE = '/api/movie/movies/';
+
+    async function fetchMovies(endpoint) {
+      try {
+        const res = await fetch(API_BASE + endpoint);
+        if (!res.ok) throw new Error(`Failed to load ${endpoint}`);
+        return await res.json();
+      } catch (e) {
+        console.error(e);
+        document.getElementById('errorMessage').textContent = e.message;
+        return [];
+      }
+    }
+
+    function createMovieCard(movie) {
+      const div = document.createElement('div');
+      div.className = 'movie-card';
+      div.onclick = () => {
+        window.location.href = `movie-details.html?movieId=${movie.movieId}`;
+      };
+
+      const imageUrl = movie.movieImageUrl || 'https://via.placeholder.com/250x140?text=No+Image';
+      const releaseDate = movie.releaseDate ? new Date(movie.releaseDate).toLocaleDateString() : 'N/A';
+      const description = movie.description ? movie.description.substring(0, 100) + '...' : 'No description available.';
+
+      div.innerHTML = `
+        <img src="${imageUrl}" alt="${movie.movieName || 'Movie Image'}">
+        <div class="movie-title">${movie.movieName || 'Untitled'}</div>
+        <div class="movie-info">Release: ${releaseDate}</div>
+        <div class="movie-description">${description}</div>
+      `;
+      return div;
+    }
+
+    async function init() {
+      const nowShowing = await fetchMovies('displayingMovies');
+      const nowContainer = document.getElementById('nowShowing');
+      nowShowing.forEach(m => nowContainer.appendChild(createMovieCard(m)));
+    }
+
+    init();
+  </script>
+</body>
+</html>

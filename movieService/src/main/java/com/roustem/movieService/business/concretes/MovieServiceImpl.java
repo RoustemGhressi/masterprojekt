@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-//import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import com.roustem.movieService.business.abstracts.CategoryService;
 import com.roustem.movieService.business.abstracts.DirectorService;
@@ -25,7 +25,7 @@ public class MovieServiceImpl implements MovieService {
     private final MovieDao movieDao;
     private final CategoryService categoryService;
     private final DirectorService directorService;
-    //private final WebClient.Builder webClientBuilder;
+    private final WebClient.Builder webClientBuilder;
 
     @Cacheable(value = "displaying_movies")
     @Override
@@ -53,7 +53,7 @@ public class MovieServiceImpl implements MovieService {
     @Override
     public Movie addMovie(MovieRequestDto movieRequestDto) {
 
-        //Boolean result = webClientBuilder.build().get()
+       // Boolean result = webClientBuilder.build().get()
                 //.uri("http://USERSERVICE/api/user/users/isUserAdmin")
                 //.header("Authorization", "Bearer " + movieRequestDto.getUserAccessToken())
                 //.retrieve()

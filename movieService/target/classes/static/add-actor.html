@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Add Actors</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #e6f0ff;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #4f46e5;
+      color: white;
+      padding: 1rem 2rem;
+      border-radius: 0 0 8px 8px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .navbar a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+
+    #navActions button {
+      background: #ef4444;
+      border: none;
+      padding: 0.5rem 1rem;
+      margin-left: 0.5rem;
+      border-radius: 6px;
+      cursor: pointer;
+      color: white;
+      font-weight: 500;
+      transition: background 0.3s ease;
+    }
+
+    #navActions button:hover {
+      background: #dc2626;
+    }
+
+    .container {
+      max-width: 450px;
+      background: #ffffff;
+      padding: 2rem 2.5rem;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+      margin: 2rem auto;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      color: #333;
+      font-size: 1.5rem;
+      border-bottom: 2px solid #3b82f6;
+      padding-bottom: 0.5rem;
+    }
+
+    label {
+      display: block;
+      margin-top: 1rem;
+      font-weight: 600;
+      color: #333;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 0.6rem;
+      margin-top: 0.3rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      transition: border-color 0.3s ease;
+    }
+
+    input:focus, select:focus {
+      border-color: #3b82f6;
+      outline: none;
+    }
+
+    button[type="submit"] {
+      width: 100%;
+      margin-top: 1.5rem;
+      padding: 0.7rem;
+      background: #4f46e5;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button[type="submit"]:hover {
+      background: #4338ca;
+    }
+  </style>
+</head>
+<body>
+  <header class="navbar">
+    <div class="logo">
+      <a href="index.html">🎬 CineVision</a>
+    </div>
+    <div id="navActions">
+      <button onclick="location.href='add-movie.html'">Add Movie</button>
+      <button onclick="location.href='add-actor.html'">Add Actor</button>
+      <button onclick="location.href='add-city.html'">Add City</button>
+      <button onclick="location.href='payment.html'">Payments</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <h1>Add Actors to Movie</h1>
+      <form id="actorForm">
+        <label for="movieId">Select Movie</label>
+        <select id="movieId" required></select>
+
+        <label for="actorNames">Actors (comma separated)</label>
+        <input type="text" id="actorNames" placeholder="e.g. Tom Hanks, Meryl Streep" required />
+
+        <button type="submit">Add Actors</button>
+      </form>
+    </div>
+  </main>
+
+  <script>
+    const API_BASE = '/api/movie/';
+    const token = ''; // Set your token if needed
+
+    async function fetchMovies() {
+      const res = await fetch(API_BASE + 'movies/displayingMovies');
+      if (!res.ok) throw new Error('Failed to fetch movies');
+      return await res.json();
+    }
+
+    function fillSelect(selectEl, items, valueKey = 'movieId', textKey = 'movieName') {
+      selectEl.innerHTML = '';
+      items.forEach(item => {
+        const opt = document.createElement('option');
+        opt.value = item[valueKey];
+        opt.textContent = item[textKey];
+        selectEl.appendChild(opt);
+      });
+    }
+
+    async function loadMovies() {
+      try {
+        const movies = await fetchMovies();
+        fillSelect(document.getElementById('movieId'), movies);
+      } catch (err) {
+        alert(err.message);
+      }
+    }
+
+    document.getElementById('actorForm').addEventListener('submit', async e => {
+      e.preventDefault();
+
+      const movieId = parseInt(document.getElementById('movieId').value);
+      const actorNamesStr = document.getElementById('actorNames').value.trim();
+      if (!actorNamesStr) {
+        alert('Please enter at least one actor name.');
+        return;
+      }
+      const actorNameList = actorNamesStr.split(',').map(s => s.trim()).filter(Boolean);
+
+      const payload = { movieId, actorNameList, token };
+
+      try {
+        const res = await fetch(API_BASE + 'actors/add', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (!res.ok) throw new Error('Failed to add actors');
+        alert('Actors added successfully!');
+        e.target.reset();
+      } catch (err) {
+        alert(err.message);
+      }
+    });
+
+    loadMovies();
+  </script>
+</body>
+</html>

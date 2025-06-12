@@ -5,7 +5,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-//import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import com.roustem.movieService.business.abstracts.DirectorService;
 import com.roustem.movieService.dao.DirectorDao;
@@ -19,7 +19,7 @@ import java.util.List;
 public class DirectorServiceImpl implements DirectorService {
 
     private final DirectorDao directorDao;
-    //private final WebClient.Builder webClientBuilder;
+    private final WebClient.Builder webClientBuilder;
 
     @Cacheable(value = "directors")
     @Override
@@ -48,7 +48,7 @@ public class DirectorServiceImpl implements DirectorService {
                     .directorName(directorRequestDto.getDirectorName())
                     .build();
             return directorDao.save(director);
-        }
+        //}
         //throw new RuntimeException("Authorization Error");
-    //}
+    }
 }

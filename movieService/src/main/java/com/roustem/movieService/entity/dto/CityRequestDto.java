@@ -14,5 +14,5 @@ import java.util.List;
 public class CityRequestDto {
     private int movieId;
     private List<String> cityNameList;
-    //private String token;
+    private String token;
 }

@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class DeleteCommentRequestDto {
     private int commentId;
-    //private String token;
+    private String token;
 }

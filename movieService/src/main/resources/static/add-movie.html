@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Add Movie</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #e6f0ff;
+      color: #222;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #4f46e5;
+      color: white;
+      padding: 1rem 2rem;
+      border-radius: 0 0 8px 8px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .navbar .logo a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+
+    #navActions button {
+      background: #ef4444;
+      border: none;
+      padding: 0.5rem 1rem;
+      margin-left: 0.5rem;
+      border-radius: 6px;
+      cursor: pointer;
+      color: white;
+      font-weight: 500;
+      transition: background 0.3s ease;
+    }
+
+    #navActions button:hover {
+      background: #dc2626;
+    }
+
+    .container {
+      max-width: 700px;
+      background: #ffffff;
+      padding: 2rem 2.5rem;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+      margin: 2rem auto;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      color: #333;
+      font-size: 1.5rem;
+      border-bottom: 2px solid #3b82f6;
+      padding-bottom: 0.5rem;
+    }
+
+    label {
+      display: block;
+      margin-top: 1rem;
+      font-weight: 600;
+      color: #333;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 0.6rem;
+      margin-top: 0.3rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      background-color: #f9fafb;
+      transition: border-color 0.3s ease;
+    }
+
+    input:focus, textarea:focus, select:focus {
+      border-color: #3b82f6;
+      outline: none;
+      background-color: #ffffff;
+    }
+
+    select[multiple], select[size] {
+      min-height: 8rem;
+    }
+
+    button[type="submit"] {
+      width: 100%;
+      margin-top: 1.5rem;
+      padding: 0.7rem;
+      background: #4f46e5;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button[type="submit"]:hover {
+      background: #4338ca;
+    }
+
+    .error-message {
+      color: red;
+      font-weight: 500;
+      margin-top: 1rem;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <header class="navbar">
+    <div class="logo">
+      <a href="index.html">🎬 CineVision</a>
+    </div>
+    <div id="navActions">
+      <button onclick="location.href='add-movie.html'">Add Movie</button>
+      <button onclick="location.href='add-actor.html'">Add Actor</button>
+      <button onclick="location.href='add-city.html'">Add City</button>
+      <button onclick="location.href='payment.html'">Payments</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <h1>Add New Movie</h1>
+      <form id="addMovieForm">
+        <label for="movieName">Movie Name</label>
+        <input type="text" id="movieName" required />
+
+        <label for="description">Description</label>
+        <textarea id="description" rows="4" required></textarea>
+
+        <label for="duration">Duration (minutes)</label>
+        <input type="number" id="duration" min="1" required />
+
+        <label for="releaseDate">Release Date</label>
+        <input type="date" id="releaseDate" required />
+
+        <label for="trailerUrl">Trailer URL</label>
+        <input type="url" id="trailerUrl" />
+
+        <label for="isInVision">Display Movie?</label>
+        <select id="isInVision" required>
+          <option value="true">Yes</option>
+          <option value="false">No</option>
+        </select>
+
+        <label for="categoryId">Category</label>
+        <select id="categoryId" required></select>
+
+        <label for="directorId">Director</label>
+        <select id="directorId" required></select>
+
+        <label for="actors">Actors (multiple)</label>
+        <select id="actors" multiple size="5"></select>
+
+        <label for="cities">Cities (multiple)</label>
+        <select id="cities" multiple size="5"></select>
+
+        <button type="submit">Add Movie</button>
+      </form>
+      <div id="errorMessage" class="error-message"></div>
+    </div>
+  </main>
+
+  <script>
+    const API_BASE = 'http://localhost:8081/api/movie/';
+    const token = localStorage.getItem('token');
+
+    async function fetchWithAuth(url) {
+      const res = await fetch(url, {
+        headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+      });
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(`Request failed (${res.status}): ${text}`);
+      }
+      return res.json();
+    }
+
+    async function fetchCategories() {
+      return fetchWithAuth(API_BASE + 'categories/getall');
+    }
+
+    async function fetchDirectors() {
+      return fetchWithAuth(API_BASE + 'directors/getall');
+    }
+
+    async function fetchActors() {
+      return fetchWithAuth(API_BASE + 'actors/getall');
+    }
+
+    async function fetchCities() {
+      return fetchWithAuth(API_BASE + 'cities/getall');
+    }
+
+    function fillSelect(selectEl, items, valueKey = 'id', textKey = 'name') {
+      selectEl.innerHTML = '';
+      items.forEach(item => {
+        const opt = document.createElement('option');
+        opt.value = item[valueKey];
+        opt.textContent = item[textKey];
+        selectEl.appendChild(opt);
+      });
+    }
+
+    async function loadFormData() {
+      try {
+        const [categories, directors, actors, cities] = await Promise.all([
+          fetchCategories(),
+          fetchDirectors(),
+          fetchActors(),
+          fetchCities()
+        ]);
+
+        fillSelect(document.getElementById('categoryId'), categories, 'categoryId', 'categoryName');
+        fillSelect(document.getElementById('directorId'), directors, 'directorId', 'directorName');
+        fillSelect(document.getElementById('actors'), actors, 'actorId', 'actorName');
+        fillSelect(document.getElementById('cities'), cities, 'cityId', 'cityName');
+      } catch (err) {
+        document.getElementById('errorMessage').textContent = err.message;
+      }
+    }
+
+    document.getElementById('addMovieForm').addEventListener('submit', async e => {
+      e.preventDefault();
+
+      const movieName = document.getElementById('movieName').value.trim();
+      const description = document.getElementById('description').value.trim();
+      const duration = parseInt(document.getElementById('duration').value);
+      const releaseDate = document.getElementById('releaseDate').value;
+      const trailerUrl = document.getElementById('trailerUrl').value.trim();
+      const isInVision = document.getElementById('isInVision').value === 'true';
+      const categoryId = parseInt(document.getElementById('categoryId').value);
+      const directorId = parseInt(document.getElementById('directorId').value);
+      const actorsSelect = document.getElementById('actors');
+      const selectedActors = Array.from(actorsSelect.selectedOptions).map(opt => parseInt(opt.value));
+      const citiesSelect = document.getElementById('cities');
+      const selectedCities = Array.from(citiesSelect.selectedOptions).map(opt => parseInt(opt.value));
+
+      const payload = {
+        movieName,
+        description,
+        duration,
+        releaseDate,
+        trailerUrl,
+        isInVision,
+        categoryId,
+        directorId,
+        actors: selectedActors,
+        cities: selectedCities,
+        userAccessToken: token
+      };
+
+      try {
+        const res = await fetch(API_BASE + 'movies/add', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+          },
+          body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) {
+          const error = await res.text();
+          throw new Error(`Failed to add movie: ${res.status} - ${error}`);
+        }
+
+        alert('Movie added successfully!');
+        e.target.reset();
+      } catch (err) {
+        document.getElementById('errorMessage').textContent = err.message;
+      }
+    });
+
+    loadFormData();
+  </script>
+</body>
+</html>

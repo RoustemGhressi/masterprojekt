@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Login</title>
+  <style>
+    body {
+      background-color: #f3f4f6;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+    form {
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgb(0 0 0 / 0.1);
+      width: 100%;
+      max-width: 360px;
+      box-sizing: border-box;
+    }
+    h1 {
+      font-size: 1.25rem;
+      margin-bottom: 1rem;
+      font-weight: bold;
+      color: #111827;
+    }
+    input {
+      width: 100%;
+      padding: 0.5rem 0.75rem;
+      margin-bottom: 1rem;
+      border-radius: 4px;
+      border: 1px solid #d1d5db;
+      font-size: 1rem;
+      box-sizing: border-box;
+      outline-offset: 2px;
+      outline-color: #3b82f6;
+    }
+    input:focus {
+      border-color: #3b82f6;
+    }
+    button {
+      background-color: #3b82f6;
+      border: none;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      padding: 0.5rem 0.75rem;
+      border-radius: 4px;
+      transition: background-color 0.3s ease;
+      width: 100%;
+      font-size: 1rem;
+    }
+    button:hover {
+      background-color: #2563eb;
+    }
+    #message {
+      color: #dc2626;
+      font-weight: 600;
+      text-align: center;
+      margin-top: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <form id="loginForm">
+    <h1>Login</h1>
+    <input type="email" id="email" placeholder="Email" required />
+    <input type="password" id="password" placeholder="Password" required />
+    <button type="submit">Login</button>
+    <p id="message"></p>
+  </form>
+
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const data = {
+        email: document.getElementById('email').value,
+        password: document.getElementById('password').value
+      };
+
+      try {
+        const response = await fetch('/api/user/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+          // Save token to localStorage (or cookie)
+          localStorage.setItem('token', result.token);
+          // Redirect or update UI after login
+          window.location.href = 'loggedin.html'; // Change this to your app main page
+        } else {
+          const errorText = await response.text();
+          document.getElementById('message').textContent = 'Login failed: ' + errorText;
+        }
+      } catch (error) {
+        document.getElementById('message').textContent = 'Error: ' + error.message;
+      }
+    });
+  </script>
+</body>
+</html>

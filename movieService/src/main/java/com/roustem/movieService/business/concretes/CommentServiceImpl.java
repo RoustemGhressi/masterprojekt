@@ -3,7 +3,7 @@ package com.roustem.movieService.business.concretes;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
-//import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import com.roustem.movieService.business.abstracts.CommentService;
 import com.roustem.movieService.business.abstracts.MovieService;
@@ -21,7 +21,7 @@ public class CommentServiceImpl implements CommentService {
 
     private final CommentDao commentDao;
     private final MovieService movieService;
-    //private final WebClient.Builder webClientBuilder;
+    private final WebClient.Builder webClientBuilder;
 
     @Override
     public List<Comment> getCommentsByMovieId(int movieId) {
@@ -46,7 +46,7 @@ public class CommentServiceImpl implements CommentService {
 
         //if (result) {
             commentDao.deleteById(deleteCommentRequestDto.getCommentId());
-       // }
+        //}
 
     }
 
@@ -72,6 +72,6 @@ public class CommentServiceImpl implements CommentService {
 
             return commentDao.save(comment);
         //}
-        //throw new RuntimeException("authorization error");
+       // throw new RuntimeException("authorization error");
     }
 }

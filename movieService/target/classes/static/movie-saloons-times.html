@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Movie Saloon Times</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 2rem; background: #e9f7ef; }
+  h1 { color: #2c3e50; }
+  form, table { max-width: 600px; margin-bottom: 2rem; background: white; padding: 1rem 2rem; border-radius: 8px; box-shadow: 0 0 10px #b2bec3; }
+  label { display: block; margin-top: 1rem; font-weight: bold; }
+  select, input, button { width: 100%; padding: 0.5rem; margin-top: 0.3rem; border-radius: 4px; border: 1px solid #ccc; }
+  button { background: #0984e3; color: white; font-weight: bold; cursor: pointer; }
+  button:hover { background: #74b9ff; }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { border: 1px solid #ddd; padding: 0.8rem; text-align: left; }
+  th { background-color: #0984e3; color: white; }
+</style>
+</head>
+<body>
+
+<a href="index.html">← Back to Home</a>
+<h1>Manage Movie Saloon Times</h1>
+
+<form id="saloonTimeForm">
+  <label for="movieSelect">Select Movie</label>
+  <select id="movieSelect" required></select>
+
+  <label for="saloonSelect">Select Saloon</label>
+  <select id="saloonSelect" required></select>
+
+  <label for="beginTime">Movie Begin Time (HH:mm)</label>
+  <input type="time" id="beginTime" required />
+
+  <button type="submit">Add Movie Saloon Time</button>
+</form>
+
+<h2>Existing Movie Saloon Times</h2>
+<table id="timesTable">
+  <thead>
+    <tr>
+      <th>Movie Name</th>
+      <th>Saloon Name</th>
+      <th>Begin Time</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<script>
+const API_BASE = '/api/movie/';
+const token = ''; // Put your auth token if needed
+
+async function fetchMovies() {
+  const res = await fetch(API_BASE + 'movies/all');
+  if (!res.ok) throw new Error('Failed to fetch movies');
+  return await res.json();
+}
+
+async function fetchSaloons() {
+  const res = await fetch(API_BASE + 'saloons/all');
+  if (!res.ok) throw new Error('Failed to fetch saloons');
+  return await res.json();
+}
+
+async function fetchMovieSaloonTimes() {
+  const res = await fetch(API_BASE + 'movieSaloonTimes/all');
+  if (!res.ok) throw new Error('Failed to fetch movie saloon times');
+  return await res.json();
+}
+
+function fillSelect(selectEl, items, valueKey, textKey) {
+  selectEl.innerHTML = '';
+  items.forEach(item => {
+    const option = document.createElement('option');
+    option.value = item[valueKey];
+    option.textContent = item[textKey];
+    selectEl.appendChild(option);
+  });
+}
+
+function populateTimesTable(times) {
+  const tbody = document.querySelector('#timesTable tbody');
+  tbody.innerHTML = '';
+  times.forEach(t => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${t.movie.movieName}</td>
+      <td>${t.saloon.saloonName}</td>
+      <td>${t.movieBeginTime}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+async function loadData() {
+  try {
+    const [movies, saloons, times] = await Promise.all([fetchMovies(), fetchSaloons(), fetchMovieSaloonTimes()]);
+    fillSelect(document.getElementById('movieSelect'), movies, 'movieId', 'movieName');
+    fillSelect(document.getElementById('saloonSelect'), saloons, 'saloonId', 'saloonName');
+    populateTimesTable(times);
+  } catch (error) {
+    alert(error.message);
+  }
+}
+
+document.getElementById('saloonTimeForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const movieId = document.getElementById('movieSelect').value;
+  const saloonId = document.getElementById('saloonSelect').value;
+  const movieBeginTime = document.getElementById('beginTime').value;
+
+  if (!movieBeginTime) {
+    alert('Please enter a valid begin time.');
+    return;
+  }
+
+  const payload = {
+    movieId: Number(movieId),
+    saloonId: Number(saloonId),
+    movieBeginTime,
+    token
+  };
+
+  try {
+    const res = await fetch(API_BASE + 'movieSaloonTimes/add', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(payload)
+    });
+    if (!res.ok) throw new Error('Failed to add movie saloon time');
+    alert('Movie saloon time added!');
+    loadData();
+    e.target.reset();
+  } catch (error) {
+    alert(error.message);
+  }
+});
+
+loadData();
+</script>
+
+</body>
+</html>

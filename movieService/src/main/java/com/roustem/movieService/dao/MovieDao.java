@@ -18,7 +18,7 @@ public interface MovieDao extends JpaRepository<Movie, Integer> {
             ") " +
             "From Movie m inner join m.category c on m.category.categoryId=c.categoryId " +
             "inner join m.director d on m.director.directorId=d.directorId " +
-            "inner join m.image i on m.image.imageId=i.imageId where m.isDisplay=true and m.releaseDate <= current_date")
+            "inner join m.image i on m.image.imageId=i.imageId ")
     List<MovieResponseDto> getAllDisplayingMoviesInVision();
 
     @Query("select new com.roustem.movieService.entity.dto.MovieResponseDto(" +
@@ -27,7 +27,7 @@ public interface MovieDao extends JpaRepository<Movie, Integer> {
             " inner join m.image i on m.image.imageId=i.imageId" +
             " inner join m.director d on m.director.directorId=d.directorId" +
             " inner join m.category c on m.category.categoryId=c.categoryId" +
-            " where m.isDisplay=false and m.releaseDate > current_date")
+            " where m.isDisplay=false")
     List<MovieResponseDto> getAllComingSoonMovies();
 
     @Query("select new com.roustem.movieService.entity.dto.MovieResponseDto(" +

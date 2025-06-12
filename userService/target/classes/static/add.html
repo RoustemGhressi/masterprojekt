@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Register</title>
+  <style>
+    body {
+      background-color: #f3f4f6;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+    form {
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgb(0 0 0 / 0.1);
+      width: 100%;
+      max-width: 360px;
+      box-sizing: border-box;
+    }
+    h1 {
+      font-size: 1.25rem;
+      margin-bottom: 1rem;
+      font-weight: bold;
+      color: #111827;
+    }
+    input, select, button {
+      width: 100%;
+      padding: 0.5rem 0.75rem;
+      margin-bottom: 1rem;
+      border-radius: 4px;
+      border: 1px solid #d1d5db;
+      font-size: 1rem;
+      box-sizing: border-box;
+      outline-offset: 2px;
+      outline-color: #3b82f6;
+    }
+    input:focus, select:focus {
+      border-color: #3b82f6;
+    }
+    button {
+      background-color: #22c55e;
+      border: none;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #16a34a;
+    }
+    #message {
+      color: #dc2626;
+      font-weight: 600;
+      text-align: center;
+      margin-top: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <form id="registerForm">
+    <h1>Register</h1>
+    <input type="text" id="customerName" placeholder="Full Name" required />
+    <input type="email" id="email" placeholder="Email" required />
+    <input type="password" id="password" placeholder="Password" required />
+    <select id="claim">
+      <option value="ROLE_CUSTOMER">Customer</option>
+      <option value="ROLE_ADMIN">Admin</option>
+    </select>
+    <button type="submit">Register</button>
+    <p id="message"></p>
+  </form>
+
+  <script>
+    document.getElementById('registerForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const data = {
+        customerName: document.getElementById('customerName').value,
+        email: document.getElementById('email').value,
+        password: document.getElementById('password').value,
+        claim: { claimName: document.getElementById('claim').value }
+      };
+
+      try {
+        const response = await fetch('/api/user/users/add', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        });
+
+        if (response.ok) {
+          window.location.href = '/login.html';
+        } else {
+          const errorText = await response.text();
+          document.getElementById('message').textContent = 'Registration failed: ' + errorText;
+        }
+      } catch (error) {
+        document.getElementById('message').textContent = 'Error: ' + error.message;
+      }
+    });
+  </script>
+</body>
+</html>

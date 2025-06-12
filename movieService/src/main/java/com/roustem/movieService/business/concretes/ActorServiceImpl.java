@@ -5,7 +5,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-//import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import com.roustem.movieService.business.abstracts.ActorService;
 import com.roustem.movieService.business.abstracts.MovieService;
@@ -22,7 +22,7 @@ public class ActorServiceImpl implements ActorService {
 
     private final ActorDao actorDao;
     private final MovieService movieService;
-    //private final WebClient.Builder webClientBuilder;
+    private final WebClient.Builder webClientBuilder;
 
     @Override
     public List<Actor> getActorsByMovieId(int movieId) {
@@ -58,9 +58,9 @@ public class ActorServiceImpl implements ActorService {
                         .build();
                 actorDao.save(actor);
             }
-        }
+        //}
 
-    //}
+    }
 
     
 }

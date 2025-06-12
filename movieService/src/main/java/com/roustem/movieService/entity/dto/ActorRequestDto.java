@@ -14,5 +14,5 @@ import java.util.List;
 public class ActorRequestDto {
     private int movieId;
     private List<String> actorNameList;
-    //private String token;
+    private String token;
 }

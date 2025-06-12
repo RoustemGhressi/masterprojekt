@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @Builder
 public class DirectorRequestDto {
     private String directorName;
-    //private String token;
+    private String token;
 }

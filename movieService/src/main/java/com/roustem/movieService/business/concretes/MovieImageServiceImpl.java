@@ -2,7 +2,7 @@ package com.roustem.movieService.business.concretes;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-//import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import com.roustem.movieService.business.abstracts.MovieImageService;
 import com.roustem.movieService.business.abstracts.MovieService;
@@ -18,7 +18,7 @@ public class MovieImageServiceImpl implements MovieImageService {
 
     private final MovieImageDao movieImageDao;
     private final MovieService movieService;
-    //private final WebClient.Builder webClientBuilder;
+    private final WebClient.Builder webClientBuilder;
 
 
     @Override
@@ -29,7 +29,7 @@ public class MovieImageServiceImpl implements MovieImageService {
                 //.header("Authorization", "Bearer " + imageRequestDto.getToken())
                 //.retrieve()
                 //.bodyToMono(Boolean.class)
-               // .block();
+                //.block();
 
         //if (result) {
             Movie movie = movieService.getMovieById(imageRequestDto.getMovieId());
@@ -39,7 +39,7 @@ public class MovieImageServiceImpl implements MovieImageService {
             image.setMovie(movie);
 
             return movieImageDao.save(image);
-        }
+        //}
         //throw new RuntimeException("Authorization Error");
-    //}
+    }
 }
