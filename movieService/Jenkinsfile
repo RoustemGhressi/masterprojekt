@@ -69,10 +69,12 @@ pipeline {
             steps {
                 withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG_FILE')]) {
                     sh '''
-                    apt-get update && \
-                    apt-get install -y curl apt-transport-https gnupg && \
-                     curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - && \
-                    echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" > /etc/apt/sources.list.d/kubernetes.list && \
+                   apt-get update && \
+                    apt-get install -y ca-certificates curl gnupg && \
+                    install -m 0755 -d /etc/apt/keyrings && \
+                    curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key | gpg --dearmor -o /etc/apt/keyrings/kubernetes-archive-keyring.gpg && \
+                    chmod 0644 /etc/apt/keyrings/kubernetes-archive-keyring.gpg && \
+                    echo "deb [signed-by=/etc/apt/keyrings/kubernetes-archive-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /" > /etc/apt/sources.list.d/kubernetes.list && \
                     apt-get update && \
                     apt-get install -y kubectl
                         export KUBECONFIG=$KUBECONFIG_FILE
